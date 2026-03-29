@@ -1,0 +1,1064 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BRÜ — Revisión de Contenido</title>
+<style>
+  :root {
+    --orange: #C4622D;
+    --orange-light: rgba(196,98,45,0.12);
+    --cream: #E8E3D9;
+    --cream-dark: #D9D3C8;
+    --black: #0A0A0A;
+    --gray: #5A5A5A;
+    --gray-light: #8A8A8A;
+    --white: #FFFFFF;
+    --green: #4A7C59;
+    --green-light: #E8F2EC;
+    --card-bg: #FDFAF6;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Helvetica Neue', Arial, sans-serif; background: var(--cream); color: var(--black); min-height: 100vh; }
+
+  /* ── HEADER ── */
+  header {
+    background: var(--black);
+    padding: 18px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-bottom: 3px solid var(--orange);
+  }
+  .logo { display: flex; flex-direction: column; }
+  .logo-name { font-size: 26px; font-weight: 900; letter-spacing: 4px; color: var(--cream); line-height: 1; }
+  .logo-sub { font-size: 9px; letter-spacing: 3px; color: var(--orange); text-transform: uppercase; margin-top: 2px; }
+  .header-right { display: flex; align-items: center; gap: 16px; }
+  .header-label { font-size: 11px; color: var(--gray-light); letter-spacing: 2px; text-transform: uppercase; }
+
+  .btn-nuevas {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--orange);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 18px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .btn-nuevas:hover { background: #A85226; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(196,98,45,0.4); }
+  .btn-nuevas svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+  /* ── TABS ── */
+  nav { background: var(--black); display: flex; padding: 0 40px; border-bottom: 1px solid #222; }
+  .tab {
+    padding: 14px 22px;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--gray-light);
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s;
+    user-select: none;
+  }
+  .tab:hover { color: var(--cream); }
+  .tab.active { color: var(--orange); border-bottom-color: var(--orange); }
+  .tab-badge {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 18px; height: 18px; border-radius: 50%;
+    background: var(--orange); color: white;
+    font-size: 10px; font-weight: 900; margin-left: 6px; vertical-align: middle;
+  }
+  .tab-badge.green { background: var(--green); }
+  .tab-badge.gray { background: #444; }
+
+  /* ── MAIN ── */
+  main { padding: 32px 40px; max-width: 1200px; margin: 0 auto; }
+  .section { display: none; }
+  .section.active { display: block; }
+  .section-header { margin-bottom: 24px; padding-bottom: 16px; border-bottom: 2px solid var(--cream-dark); }
+  .section-header h2 { font-size: 20px; font-weight: 900; color: var(--black); }
+  .section-header p { font-size: 12px; color: var(--gray-light); margin-top: 4px; }
+
+  .empty-state { text-align: center; padding: 80px 40px; color: var(--gray-light); }
+  .empty-state .icon { font-size: 48px; margin-bottom: 16px; }
+  .empty-state h3 { font-size: 18px; color: var(--gray); margin-bottom: 8px; }
+  .empty-state p { font-size: 13px; }
+
+  /* ── CARD ── */
+  .card {
+    background: var(--card-bg);
+    border-radius: 12px;
+    margin-bottom: 20px;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    border: 1px solid rgba(196,98,45,0.1);
+    transition: box-shadow 0.2s;
+  }
+  .card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.12); }
+
+  .card-header {
+    background: var(--cream-dark);
+    padding: 14px 22px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    user-select: none;
+  }
+  .card-header:hover { background: #CEC8BC; }
+
+  .card-title-block { display: flex; align-items: center; gap: 12px; }
+  .card-num {
+    background: var(--orange); color: white;
+    width: 30px; height: 30px; border-radius: 7px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 900; flex-shrink: 0;
+  }
+  .card-title { font-size: 14px; font-weight: 800; color: var(--black); }
+  .card-meta { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 3px; }
+  .pill {
+    font-size: 9px; letter-spacing: 1px; text-transform: uppercase;
+    font-weight: 700; padding: 2px 7px; border-radius: 100px;
+    background: var(--cream); color: var(--gray);
+  }
+  .pill.orange { background: rgba(196,98,45,0.12); color: var(--orange); }
+  .pill.green  { background: rgba(74,124,89,0.12);  color: var(--green); }
+  .pill.done   { background: #2A2A2A; color: #AAA; }
+
+  .card-chevron { font-size: 16px; color: var(--gray-light); transition: transform 0.2s; flex-shrink: 0; }
+  .card-chevron.open { transform: rotate(180deg); }
+
+  .card-body { display: none; }
+  .card-body.open { display: block; }
+
+  /* ── CONTENT GRID ── */
+  .content-grid { display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid var(--cream-dark); }
+  .content-block {
+    padding: 18px 22px;
+    border-bottom: 1px solid var(--cream-dark);
+    border-right: 1px solid var(--cream-dark);
+  }
+  .content-block:nth-child(even) { border-right: none; }
+  .content-block.full { grid-column: 1 / -1; border-right: none; }
+  .content-label {
+    font-size: 9px; letter-spacing: 2px; text-transform: uppercase;
+    font-weight: 900; color: var(--orange); margin-bottom: 7px;
+  }
+  .content-text { font-size: 12px; color: var(--gray); line-height: 1.7; white-space: pre-wrap; }
+  .hook-text { font-size: 15px; font-weight: 800; color: var(--black); font-style: italic; line-height: 1.4; }
+  .ref-link {
+    color: var(--orange); text-decoration: none; font-size: 12px; font-weight: 600;
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 12px; background: var(--orange-light); border-radius: 6px;
+    transition: background 0.2s; word-break: break-all;
+  }
+  .ref-link:hover { background: rgba(196,98,45,0.22); }
+
+  /* ── ACTION ZONE ── */
+  .card-actions {
+    padding: 18px 22px;
+    background: #F7F3EE;
+    border-top: 2px solid var(--cream-dark);
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+  .mod-area { flex: 1; min-width: 200px; }
+  .mod-area label { display: block; font-size: 9px; letter-spacing: 2px; text-transform: uppercase; font-weight: 900; color: var(--gray); margin-bottom: 7px; }
+  .mod-area textarea {
+    width: 100%; padding: 9px 13px;
+    border: 1px solid var(--cream-dark); border-radius: 8px;
+    font-size: 12px; font-family: inherit; color: var(--black);
+    background: white; resize: vertical; min-height: 72px;
+    transition: border-color 0.2s;
+  }
+  .mod-area textarea:focus { outline: none; border-color: var(--orange); }
+
+  .action-btns { display: flex; flex-direction: column; gap: 7px; flex-shrink: 0; }
+
+  /* ── BUTTONS ── */
+  .btn {
+    padding: 9px 18px; border-radius: 8px;
+    font-size: 11px; letter-spacing: 1px; text-transform: uppercase;
+    font-weight: 800; cursor: pointer; border: none;
+    transition: all 0.2s; white-space: nowrap;
+  }
+  .btn-approve   { background: var(--green); color: white; }
+  .btn-approve:hover   { background: #3A6347; transform: translateY(-1px); }
+  .btn-done      { background: var(--black); color: var(--cream); }
+  .btn-done:hover      { background: #333; transform: translateY(-1px); }
+  .btn-back      { background: transparent; color: var(--orange); border: 1.5px solid var(--orange); font-size: 10px; padding: 7px 14px; }
+  .btn-back:hover      { background: var(--orange-light); }
+  .btn-save-mod  { background: transparent; color: var(--gray); border: 1.5px solid var(--cream-dark); font-size: 10px; padding: 6px 13px; margin-top: 5px; }
+  .btn-save-mod:hover  { border-color: var(--orange); color: var(--orange); }
+
+  .mod-note {
+    background: rgba(196,98,45,0.07); border-left: 3px solid var(--orange);
+    padding: 9px 13px; border-radius: 0 7px 7px 0;
+    font-size: 11px; color: var(--gray); margin-top: 10px; font-style: italic;
+  }
+  .mod-note strong { display: block; font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--orange); margin-bottom: 3px; font-style: normal; }
+
+  /* ── DONE SECTION ── */
+  .section-done .card-header { background: #2A2A2A; }
+  .section-done .card-header:hover { background: #333; }
+  .section-done .card-title { color: #CCC; }
+  .section-done .card-num { background: #555; }
+  .section-done .card-chevron { color: #555; }
+  .section-done .content-block { background: #FAFAFA; }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.65);
+    z-index: 200;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--black);
+    border-radius: 16px;
+    max-width: 540px;
+    width: 100%;
+    overflow: hidden;
+    border: 1px solid #333;
+    box-shadow: 0 24px 64px rgba(0,0,0,0.6);
+  }
+  .modal-header {
+    padding: 24px 28px 16px;
+    border-bottom: 1px solid #222;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .modal-header h3 { font-size: 18px; font-weight: 900; color: var(--cream); letter-spacing: 0.5px; }
+  .modal-header p { font-size: 12px; color: var(--gray-light); margin-top: 4px; }
+  .modal-close { background: none; border: none; color: var(--gray-light); cursor: pointer; font-size: 20px; padding: 0; flex-shrink: 0; }
+  .modal-close:hover { color: var(--cream); }
+  .modal-body { padding: 20px 28px 28px; }
+
+  .modal-step {
+    display: flex;
+    gap: 14px;
+    margin-bottom: 20px;
+  }
+  .modal-step-num {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--orange); color: white;
+    font-size: 12px; font-weight: 900;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; margin-top: 2px;
+  }
+  .modal-step-text { flex: 1; }
+  .modal-step-text h4 { font-size: 13px; font-weight: 700; color: var(--cream); margin-bottom: 4px; }
+  .modal-step-text p { font-size: 12px; color: #888; line-height: 1.5; }
+
+  .prompt-box {
+    background: #1A1A1A;
+    border: 1px solid #333;
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-top: 8px;
+  }
+  .prompt-text { font-size: 13px; color: var(--cream); font-style: italic; line-height: 1.5; }
+  .btn-copy-prompt {
+    display: flex; align-items: center; gap: 6px;
+    background: var(--orange); color: white; border: none;
+    border-radius: 7px; padding: 8px 16px;
+    font-size: 11px; font-weight: 800; letter-spacing: 1px;
+    text-transform: uppercase; cursor: pointer; margin-top: 10px;
+    transition: all 0.2s;
+  }
+  .btn-copy-prompt:hover { background: #A85226; }
+  .btn-copy-prompt.copied { background: var(--green); }
+
+  .modal-note {
+    background: #1A1A1A;
+    border-left: 3px solid var(--orange);
+    padding: 10px 14px;
+    border-radius: 0 8px 8px 0;
+    font-size: 11px;
+    color: #888;
+    margin-top: 20px;
+    line-height: 1.5;
+  }
+
+  /* ── TOAST ── */
+  #toast {
+    position: fixed; bottom: 28px; right: 28px;
+    background: var(--black); color: var(--cream);
+    padding: 13px 18px; border-radius: 10px;
+    font-size: 13px; font-weight: 600;
+    border-left: 4px solid var(--orange);
+    opacity: 0; transform: translateY(12px);
+    transition: all 0.3s; z-index: 999;
+    pointer-events: none; max-width: 280px;
+  }
+  #toast.show { opacity: 1; transform: translateY(0); }
+
+  @media (max-width: 768px) {
+    header { padding: 14px 18px; }
+    nav { padding: 0 18px; overflow-x: auto; }
+    main { padding: 20px 18px; }
+    .content-grid { grid-template-columns: 1fr; }
+    .content-block { border-right: none; }
+    .btn-nuevas span { display: none; }
+    .header-label { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── HEADER ─────────────────────────────────────────────── -->
+<header>
+  <div class="logo">
+    <div class="logo-name">BRÜ</div>
+    <div class="logo-sub">Creative Coffee House</div>
+  </div>
+  <div class="header-right">
+    <div class="header-label">Plan de Contenido</div>
+    <button class="btn-nuevas" onclick="openNuevasModal()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+      <span>Nuevas Ideas</span>
+    </button>
+  </div>
+</header>
+
+<!-- ── TABS ───────────────────────────────────────────────── -->
+<nav>
+  <div class="tab active" onclick="switchTab('revision')">
+    En Revisión <span class="tab-badge" id="badge-revision">0</span>
+  </div>
+  <div class="tab" onclick="switchTab('aprobadas')">
+    Aprobadas ✓ <span class="tab-badge green" id="badge-aprobadas">0</span>
+  </div>
+  <div class="tab" onclick="switchTab('realizadas')">
+    Ya Grabadas 🎬 <span class="tab-badge gray" id="badge-realizadas">0</span>
+  </div>
+</nav>
+
+<!-- ── MAIN ───────────────────────────────────────────────── -->
+<main>
+  <div class="section active" id="section-revision">
+    <div class="section-header">
+      <h2>En Revisión</h2>
+      <p>Revisa cada guión. Apruébalo o deja una nota de modificaciones antes de aprobarlo.</p>
+    </div>
+    <div id="cards-revision"></div>
+    <div class="empty-state" id="empty-revision" style="display:none">
+      <div class="icon">✨</div>
+      <h3>No hay ideas pendientes</h3>
+      <p>Presiona <strong>Nuevas Ideas</strong> en la parte superior para generar un nuevo lote con Claude.</p>
+    </div>
+  </div>
+
+  <div class="section" id="section-aprobadas">
+    <div class="section-header">
+      <h2>Aprobadas por BRÜ ✓</h2>
+      <p>Ideas listas para grabar. Cuando la hayas filmado, márcala como "Ya la grabamos".</p>
+    </div>
+    <div id="cards-aprobadas"></div>
+    <div class="empty-state" id="empty-aprobadas" style="display:none">
+      <div class="icon">📋</div>
+      <h3>No hay ideas aprobadas aún</h3>
+      <p>Aprueba ideas desde la pestaña "En Revisión".</p>
+    </div>
+  </div>
+
+  <div class="section section-done" id="section-realizadas">
+    <div class="section-header">
+      <h2>Ya Grabadas 🎬</h2>
+      <p>Archivo de contenido grabado y publicado.</p>
+    </div>
+    <div id="cards-realizadas"></div>
+    <div class="empty-state" id="empty-realizadas" style="display:none">
+      <div class="icon">🎬</div>
+      <h3>Aún no hay videos grabados</h3>
+      <p>Cuando grabes una idea aprobada, márcala aquí.</p>
+    </div>
+  </div>
+</main>
+
+<!-- ── MODAL "NUEVAS IDEAS" ──────────────────────────────── -->
+<div class="modal-overlay" id="modal-overlay" onclick="handleOverlayClick(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <h3>Nuevas Ideas de Contenido</h3>
+        <p>Genera un nuevo lote de 10 guiones con Claude</p>
+      </div>
+      <button class="modal-close" onclick="closeNuevasModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-step">
+        <div class="modal-step-num">1</div>
+        <div class="modal-step-text">
+          <h4>Copia este mensaje</h4>
+          <p>Especifica un tema (opcional) para ideas más enfocadas</p>
+          <div style="margin-bottom: 14px;">
+            <label for="tema-input" style="display: block; font-size: 12px; color: var(--gray); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 1px;">Tema (opcional)</label>
+            <input type="text" id="tema-input" placeholder="ej: verano, menú de arte, bebidas frías..." style="width: 100%; padding: 10px 12px; border: 1px solid var(--orange-light); border-radius: 6px; font-size: 13px; font-family: inherit; background: var(--white); color: var(--black); transition: border-color 0.2s;">
+          </div>
+          <div class="prompt-box">
+            <div class="prompt-text" id="prompt-text">Genera un nuevo lote de ideas de contenido para BRÜ y agrégalas al archivo BRÜ_Content_Review.html — manteniendo los guiones ya aprobados y grabados.</div>
+          </div>
+          <button class="btn-copy-prompt" id="btn-copy" onclick="copyPrompt()">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 012-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+            Copiar mensaje
+          </button>
+        </div>
+      </div>
+      <div class="modal-step">
+        <div class="modal-step-num">2</div>
+        <div class="modal-step-text">
+          <h4>Pégalo en tu chat de Claude</h4>
+          <p>Claude correrá el skill, investigará nuevas tendencias y agregará 10 nuevas ideas directamente a este archivo.</p>
+        </div>
+      </div>
+      <div class="modal-step">
+        <div class="modal-step-num">3</div>
+        <div class="modal-step-text">
+          <h4>Recarga esta página</h4>
+          <p>Las nuevas ideas aparecerán automáticamente en la pestaña "En Revisión". Tus ideas aprobadas y grabadas se mantienen intactas.</p>
+        </div>
+      </div>
+      <div class="modal-note">
+        💡 <strong>Tip:</strong> Puedes agregar un tema al mensaje, por ejemplo: "...ideas enfocadas en la temporada de verano" o "...para el lanzamiento del menú nuevo".
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ── VIDEO DATA ─────────────────────────────────────────────────────────────
+// BRU_VIDEOS_START — no borrar este comentario, es usado por Claude para agregar nuevos lotes
+const VIDEOS_DATA = [
+  {
+    id: 1,
+    titulo: "POV: Llegaste a BRÜ",
+    plataforma: "TikTok & Instagram Reels",
+    duracion: "15–20 seg",
+    formato: "POV / Estética",
+    referencia_texto: "@gravitycoffeeus — POV: Black Coffee Ordering Experience (TikTok)",
+    referencia_url: "https://www.tiktok.com/@gravitycoffeeus/video/7537873680290893070",
+    hook: `"POV: encontraste el lugar donde nadie te va a juzgar por llevar tu pintura"`,
+    guion: `[Sin voz. Solo audio ambiente: jazz suave, sonido de café.]
+
+Plano abriendo la puerta de BRÜ desde afuera — mano empujando la puerta.
+Cut: vista del espacio — mesas, plants, arte en las paredes.
+Cut: latte art siendo colocado frente a cámara.
+Cut: alguien abriendo su cuaderno de bocetos o paleta de colores.
+Cut: close-up del logo BRÜ.
+Texto final: "Ven a lo que sea. Quédate por el café."`,
+    texto_pantalla: `[00:00] POV: encontraste el lugar donde nadie te va a juzgar por llevar tu pintura
+[00:08] San Pedro Garza García
+[00:13] BRÜ — Creative Coffee House
+[00:16] @bru_____bru`,
+    musica: `Audio ambiental con jazz suave o trending lo-fi de TikTok (ej. 'Sunny Day' o similar)`,
+    notas: `— Grabar con luz natural de mañana (best light en BRÜ entre 9-11am)
+— Empezar con plano subjetivo de la mano empujando la puerta
+— Mostrar el arte en paredes, la barra, y algún invitado trabajando/dibujando
+— No mostrar caras de clientes sin permiso — enfocarse en hands, drinks, espacio
+— Cámara: celular vertical, sin estabilizador para feeling natural`,
+    cta: `"Síguenos para más" en el último frame | sticker de ubicación San Pedro`
+  },
+  {
+    id: 2,
+    titulo: "Un día en BRÜ — de apertura a cierre",
+    plataforma: "TikTok",
+    duracion: "45–60 seg",
+    formato: "Day in the life / Vlog acelerado",
+    referencia_texto: "@ethanrodecoffee — A day in the life of my coffee shop (2.9M likes, TikTok)",
+    referencia_url: "https://www.tiktok.com/@ethanrodecoffee/video/7299103827737840938",
+    hook: `"Son las 7am. Así empieza un día en el espacio más creativo de San Pedro."`,
+    guion: `[Voz en off — tono relajado, como contando a un amigo]
+
+'Son las 7 de la mañana. Hay que abrir.'
+[Plano: llaves en la puerta, luces encendiéndose]
+
+'Primera máquina encendida. Primer espresso del día. Del día, no de la semana — aunque a veces se siente igual.'
+[Plano: café preparándose en máquina espresso]
+
+'Los primeros invitados llegan con su laptop y su cara de "necesito wifi y silencio". Los entendemos perfectamente.'
+[Plano: persona llegando, acomodándose]
+
+'Aquí hay alguien pintando en la mesa 4. No sé qué es todavía, pero va bien.'
+[Plano: manos pintando en el menú de arte]
+
+'Mediodía. El lugar está vivo. Hay café, hay arte, hay conversaciones que no escuchas pero que claramente son importantes.'
+[Plano: espacio lleno, ambiente]
+
+'Y al final del día, cerramos con la misma energía con la que abrimos: con ganas de que mañana sea igual.'
+[Plano: última taza del día, apagando luces]
+
+'BRÜ. Creative Coffee House. San Pedro.'`,
+    texto_pantalla: `[00:00] Son las 7am.
+[00:08] Así empieza BRÜ.
+[00:30] Menú de Arte disponible todo el día
+[00:50] BRÜ Creative Coffee House
+[00:55] @bru_____bru | San Pedro Garza García`,
+    musica: `Algo con energía positiva pero chill — ej. 'Good Day' de Nappy Roots o trending upbeat de TikTok`,
+    notas: `— Grabar durante un día real de operación (no forzado)
+— Mezclar planos de: apertura, barista preparando, invitados trabajando, menú de arte en uso, cierre
+— Voz en off grabada después, encima del video
+— Estilo: rápido pero no caótico — cada clip ~2-3 segundos
+— Puedes aparecer tú (Manolo) o el/la barista como protagonista`,
+    cta: `"¿Nos visitas mañana?" en el caption`
+  },
+  {
+    id: 3,
+    titulo: "Así se hace nuestra bebida más pedida",
+    plataforma: "TikTok & Instagram Reels",
+    duracion: "30–45 seg",
+    formato: "Tutorial / Behind the scenes",
+    referencia_texto: "@baristahamburg — Let's make some drinks (sonidos reales de barista, Instagram Reel)",
+    referencia_url: "https://www.instagram.com/reel/DGTL8MyxV4Z/",
+    hook: `"Lleva [X] segundos hacerla. Llevas [X] meses pidiéndola."`,
+    guion: `[Sin voz o voz muy mínima. El sonido es protagonista: espresso, leche, vapor.]
+
+[Plano: close-up de los granos de café cayendo]
+Texto: 'Todo empieza aquí.'
+
+[Plano: extracción del espresso — slow motion del chorro]
+Texto: '30 segundos de extracción.'
+
+[Plano: leche siendo vaporeada]
+Texto: 'La textura lo cambia todo.'
+
+[Plano: el pour — latte art apareciendo]
+Texto: 'Y esto no es decoración. Es precisión.'
+
+[Plano final: bebida completa en mano, sobre mesa bonita de BRÜ]
+Texto: '[Nombre de la bebida]. Solo en BRÜ.'
+
+[Voz opcional al final, muy chill]: 'Te esperamos.'`,
+    texto_pantalla: `[00:00] Lleva 30 segundos hacerla. Llevas meses pidiéndola.
+[00:05] Todo empieza aquí.
+[00:12] 30 segundos de extracción.
+[00:18] La textura lo cambia todo.
+[00:25] Y esto no es decoración. Es precisión.
+[00:35] [Nombre bebida]. Solo en BRÜ.
+[00:42] @bru_____bru`,
+    musica: `ASMR natural (sonidos reales de café) + música suave de fondo`,
+    notas: `— Filmar con luz controlada directamente sobre la barra (ring light o ventana lateral)
+— Usar el drink más popular o más visual de BRÜ
+— Slow motion en el pour de espresso y el latte art (240fps si el celular lo permite)
+— Close-ups de cada paso: granos, filtro, extracción, texturizado, pour
+— Plano final: drink en contexto BRÜ (mesa bonita, luz natural)`,
+    cta: `"¿Cuál es la tuya? Cuéntanos en los comentarios."`
+  },
+  {
+    id: 4,
+    titulo: "El menú de arte — no es lo que crees",
+    plataforma: "TikTok & Instagram Reels",
+    duracion: "20–30 seg",
+    formato: "Reveal / Educacional",
+    referencia_texto: "@obtainingsocial_ — How we would make you viral, coffee shop edition (TikTok)",
+    referencia_url: "https://www.tiktok.com/@obtainingsocial_/video/7513199719498386734",
+    hook: `"Sí, en BRÜ tienes menú de café. Pero también tienes menú de arte."`,
+    guion: `[Voz en off, tono casual y con humor ligero]
+
+'Oye, ¿sabías que en BRÜ hay menú de arte?'
+
+[Plano: alguien abriendo un menú — pero en vez de bebidas, son actividades creativas]
+
+'No es que tengamos galería — bueno, sí también — pero nos referimos a que puedes pedir materiales y ponerte a crear mientras tu café llega.'
+
+[Plano: acuarelas, arcilla, marcadores, sketchbooks siendo usados en las mesas]
+
+'Pintura. Dibujo. Lo que sea. Sin reglas. Sin "tienes que ser artista".'
+
+[Plano: alguien que claramente no es artista profesional disfrutando]
+
+'El café es el combustible. La creatividad la pones tú.'
+
+[Plano final: logo BRÜ + mesa con café y arte]`,
+    texto_pantalla: `[00:00] Sí, en BRÜ hay menú de arte.
+[00:08] No necesitas ser artista.
+[00:18] El café es el combustible. La creatividad la pones tú.
+[00:26] BRÜ — Creative Coffee House
+[00:28] @bru_____bru`,
+    musica: `Algo playful e indie — trending indie folk o algo chill con personalidad`,
+    notas: `— Mostrar el menú físico de arte si existe, o crear una versión visual del mismo
+— Filmar personas reales usando los materiales (con permiso)
+— Enfatizar la accesibilidad: no se necesita ser artista
+— Plano del espacio con arte en paredes como telón de fondo`,
+    cta: `"¿Qué crearías en BRÜ? 🎨" en caption`
+  },
+  {
+    id: 5,
+    titulo: "Latte art en cámara lenta",
+    plataforma: "Instagram Reels",
+    duracion: "15–20 seg",
+    formato: "Estética / ASMR visual",
+    referencia_texto: "@mocisaac — Slow motion latte art progress (TikTok)",
+    referencia_url: "https://www.tiktok.com/@mocisaac/video/7474267234068598038",
+    hook: `El hook ES el latte art en slow motion — los primeros 2 segundos lo dicen todo`,
+    guion: `[Sin voz. 100% visual + audio ASMR o música lo-fi]
+
+[Slow motion: leche entrando al espresso creando un corazón o roseta]
+— La cámara sigue el movimiento del jarro de leche de inicio a fin —
+[Cut: la taza completa, el arte perfecto, siendo colocada sobre la barra]
+[Cut: mano del barista alejándose — revela el diseño completo]
+[Texto final]: '📍 BRÜ, San Pedro'
+[Logo BRÜ]`,
+    texto_pantalla: `[00:00] (ningún texto — dejar que el visual respire)
+[00:12] 📍 BRÜ Creative Coffee House
+[00:15] San Pedro Garza García`,
+    musica: `Lo-fi tranquilo o ASMR puro (sonido real de leche + taza). Ej: 'Clair de Lune' versión lo-fi`,
+    notas: `— Este video es 100% estética — calidad visual es prioritaria
+— Usar slow motion a 240fps (iPhone) o 120fps mínimo
+— Luz: natural lateral o luz suave sobre la barra
+— Barista debe ser alguien con buen latte art — practicar antes de filmar
+— Fondo limpio — solo la barra y el drink`,
+    cta: `"¿Roseta o corazón?" — pregunta en el caption para engagement`
+  },
+  {
+    id: 6,
+    titulo: "Adivina qué bebida es — el challenge",
+    plataforma: "TikTok",
+    duracion: "20–30 seg",
+    formato: "Interactivo / Challenge",
+    referencia_texto: "@bellaamtz — Guess the Drink Challenge (TikTok)",
+    referencia_url: "https://www.tiktok.com/@bellaamtz/video/7358186413164137770",
+    hook: `"Si adivinas qué bebida es, te la invitamos. (Casi.)"`,
+    guion: `[Voz en off — tono divertido]
+
+'Oye, te vamos a mostrar algo y quiero que lo adivines.'
+
+[Plano: bebida misteriosa filmada desde arriba — no se ve la etiqueta ni nada obvio]
+'Color, textura, aroma... ¿qué es?'
+
+[Cut a close-up de la espuma, el color del líquido]
+'¿Matcha? ¿Latte? ¿Algo más raro?'
+
+[Pausa — texto en pantalla: ???]
+
+[Reveal: nombre de la bebida aparece]
+'Era el [nombre]. Solo en BRÜ.'
+
+[Voz]: 'Escribe en los comentarios si la adivinaste — sin hacer trampa.'`,
+    texto_pantalla: `[00:00] Si adivinas qué bebida es, te la invitamos. (Casi.)
+[00:08] ¿Qué crees que es?
+[00:15] ???
+[00:20] Era: [nombre de la bebida]
+[00:25] Solo en BRÜ. @bru_____bru`,
+    musica: `Algo con suspenso ligero y gracioso — trending suspense audio de TikTok`,
+    notas: `— Elegir una bebida que no sea tan obvia visualmente
+— Filmarlo para que la bebida llene el frame
+— El reveal puede ser literalmente un texto apareciendo en pantalla
+— Repetir con distintas bebidas — esto se convierte en serie`,
+    cta: `"¿La adivinaste? 👇" — el caption es el CTA`
+  },
+  {
+    id: 7,
+    titulo: "La versión BRÜ del Pistacho Latte",
+    plataforma: "TikTok",
+    duracion: "30 seg",
+    formato: "Trending drink / BRÜ twist",
+    referencia_texto: "@latteartcity — Best pistachio cappuccino (TikTok)",
+    referencia_url: "https://www.tiktok.com/@latteartcity/video/7345883255884778785",
+    hook: `"Sí, el pistacho latte llegó a BRÜ. Y le pusimos nuestro toque."`,
+    guion: `[Voz — directa, con ligera ironía BRÜ]
+
+'El pistacho latte ya llegó a todos lados.'
+[Plano: trend de TikTok montado — estilo "expectativa"]
+
+'Pero en BRÜ decidimos no hacerlo exactamente igual.'
+[Plano: nuestra versión del drink — con el toque visual BRÜ]
+
+'Le pusimos [ingrediente especial / técnica propia]. Porque si lo hacemos, lo hacemos bien.'
+[Close-up de la bebida]
+
+'¿Tiene pistacho? Sí. ¿Es exactamente el de TikTok? No. ¿Está bueno? Mucho.'
+[Barista o dueño prueba el drink en cámara]
+
+'[Nombre de la bebida BRÜ]. Disponible ahora.'`,
+    texto_pantalla: `[00:00] Sí, el pistacho latte llegó a BRÜ.
+[00:07] Y le pusimos nuestro toque.
+[00:18] [Nombre de la bebida BRÜ]
+[00:24] Disponible ahora en BRÜ
+[00:28] @bru_____bru | San Pedro`,
+    musica: `Trending audio de TikTok del momento — lo que esté viral esa semana`,
+    notas: `— Grabar cuando el trend esté en su pico
+— Mostrar el diferenciador BRÜ — no copiar el drink, adaptarlo
+— Si no es pistacho en el momento de grabar, sustituir por el trending drink del momento
+— Tono: irónico y seguro — BRÜ no sigue tendencias, las interpreta`,
+    cta: `"¿Lo probaste? Cuéntanos en los comentarios."`
+  },
+  {
+    id: 8,
+    titulo: "¿Qué haces en BRÜ mientras esperas tu café?",
+    plataforma: "TikTok & Instagram Reels",
+    duracion: "20–30 seg",
+    formato: "Montaje / Comunidad",
+    referencia_texto: "@mayratouchofglam — Experience Coffee Aesthetics: A Unique Coffee Shop POV (TikTok)",
+    referencia_url: "https://www.tiktok.com/@mayratouchofglam/video/7488838789947821354",
+    hook: `"En BRÜ la espera por tu café se ve así..."`,
+    guion: `[Sin voz. Montaje rápido al ritmo de la música.]
+
+[Plano 1: alguien abriendo su sketchbook mientras espera]
+[Plano 2: manos mezclando acuarelas]
+[Plano 3: alguien con laptop, auriculares, concentrado]
+[Plano 4: dos personas en conversación, riendo]
+[Plano 5: alguien leyendo un libro con su latte ya en mano]
+[Plano 6: close-up de mano sosteniendo taza con latte art]
+
+Texto al final: 'La espera no existe cuando estás en el lugar correcto.'
+Logo BRÜ.`,
+    texto_pantalla: `[00:00] En BRÜ la espera por tu café se ve así...
+[00:22] La espera no existe cuando estás en el lugar correcto.
+[00:27] BRÜ Creative Coffee House | @bru_____bru`,
+    musica: `Chill-indie o lo-fi con buen ritmo — ej. 'Bloom' de HONNE`,
+    notas: `— Filmar durante un día normal de operación — no staged
+— Diversidad de actividades: arte, trabajo, lectura, conversación
+— Pedir permiso a invitados (o filmar de espaldas / planos generales)
+— Luz natural siempre`,
+    cta: `"¿Qué haces tú mientras esperas tu café? 👇"`
+  },
+  {
+    id: 9,
+    titulo: "Así abrimos BRÜ — el ritual de la mañana",
+    plataforma: "TikTok",
+    duracion: "30–45 seg",
+    formato: "Rutina / Detrás de cámaras",
+    referencia_texto: "@cc.campbell — Day in my life running my business (Latina coffee shop owner, 9.5M seguidores, TikTok)",
+    referencia_url: "https://www.tiktok.com/@cc.campbell/video/7487739007397317943",
+    hook: `"Son las 7am y esto es lo que pasa antes de que llegues."`,
+    guion: `[Voz en off — cálida, como alguien que cuenta su día]
+
+'Antes de que llegue el primer invitado...'
+[Plano: abriendo las persianas o encendiendo luces]
+
+'...hay un ritual.'
+[Plano: encendiendo la máquina de espresso]
+
+'Primero el espresso. Siempre el espresso.'
+[Plano: barista haciéndose un café]
+
+'Luego el espacio — que todo esté bien, que huela bien, que se sienta bien.'
+[Plano: arreglando mesas, flores, materiales de arte]
+
+'Y cuando todo está listo...'
+[Plano: volteando el letrero de "cerrado" a "abierto"]
+
+'...BRÜ abre.'
+[Plano del espacio ya listo, iluminado]
+'Y empieza lo bueno.'`,
+    texto_pantalla: `[00:00] Son las 7am. Esto es lo que pasa antes de que llegues.
+[00:10] El ritual de apertura de BRÜ.
+[00:35] Y empieza lo bueno.
+[00:43] @bru_____bru`,
+    musica: `Indie upbeat o lo-fi matutino. Ej. 'Golden Hour' de JVKE`,
+    notas: `— Grabar de verdad en la mañana (o la hora de apertura real)
+— No editar demasiado — el encanto es que se vea real
+— El barista o tú como protagonista
+— Planos: ventanas con luz matutina, vapor del espresso, manos arreglando el espacio`,
+    cta: `"¿Eres team primer café de la mañana? ☕" en el caption`
+  },
+  {
+    id: 10,
+    titulo: "BRÜ Confessional — algo que no esperabas",
+    plataforma: "TikTok",
+    duracion: "30–45 seg",
+    formato: "Customer engagement / UGC / Serie",
+    referencia_texto: "@obtainingsocial_ — Café Confessionals & Same Time Tomorrow format (TikTok)",
+    referencia_url: "https://www.tiktok.com/@obtainingsocial_/video/7513199719498386734",
+    hook: `"Le preguntamos a nuestros invitados algo que no esperaban. Sus respuestas..."`,
+    guion: `[Barista o alguien del equipo con micrófono sencillo]
+
+'Le hicimos una pregunta a nuestros invitados hoy...'
+[Texto: la pregunta del día, ej. "¿En qué proyecto llevas meses sin avanzar?"]
+
+[Cortes rápidos de distintos invitados respondiendo]
+Invitado 1: [respuesta honesta / chistosa]
+Invitado 2: [respuesta inesperada]
+Invitado 3: [respuesta que conecta]
+
+'Y así es BRÜ todos los días.'
+'Un lugar donde las ideas fluyen. Y las confesiones también.'`,
+    texto_pantalla: `[00:00] Le preguntamos a nuestros invitados algo que no esperaban.
+[00:05] La pregunta de hoy: "¿En qué proyecto llevas meses sin avanzar?"
+[00:30] Un lugar donde las ideas fluyen. Y las confesiones también.
+[00:40] BRÜ Creative Coffee House | @bru_____bru`,
+    musica: `Lo-fi muy suave o sin música — no debe competir con las voces`,
+    notas: `— Formato de SERIE — grabar una vez a la semana con distintas preguntas
+— Preguntas sugeridas: "¿Qué crearías si no tuvieras miedo?" / "¿En qué estás trabajando hoy?"
+— Pedir permiso explícito a invitados
+— Editar rápido — no más de 3-4 respuestas por video`,
+    cta: `"¿Cuál es tu respuesta? 👇" en el caption`
+  }
+];
+// BRU_VIDEOS_END — no borrar este comentario
+
+// ── STATE ──────────────────────────────────────────────────────────────────
+const STORAGE_KEY = 'bru_content_state_v2';
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch(e) {}
+  return { videos: {} };
+}
+
+function saveState(state) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+
+let state = loadState();
+
+function getVS(id) {
+  return state.videos[id] || { status: 'pending', modification: '' };
+}
+
+function setVS(id, changes) {
+  state.videos[id] = { ...getVS(id), ...changes };
+  saveState(state);
+}
+
+// ── TOAST ──────────────────────────────────────────────────────────────────
+let toastTimer = null;
+function showToast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 2800);
+}
+
+// ── RENDER ─────────────────────────────────────────────────────────────────
+function renderAll() {
+  const pending  = VIDEOS_DATA.filter(v => getVS(v.id).status === 'pending');
+  const approved = VIDEOS_DATA.filter(v => getVS(v.id).status === 'approved');
+  const done     = VIDEOS_DATA.filter(v => getVS(v.id).status === 'done');
+
+  document.getElementById('badge-revision').textContent   = pending.length;
+  document.getElementById('badge-aprobadas').textContent  = approved.length;
+  document.getElementById('badge-realizadas').textContent = done.length;
+
+  renderSection('cards-revision',  pending,  'pending');
+  renderSection('cards-aprobadas', approved, 'approved');
+  renderSection('cards-realizadas',done,     'done');
+
+  ['revision','aprobadas','realizadas'].forEach((s, i) => {
+    const counts = [pending.length, approved.length, done.length];
+    document.getElementById(`empty-${s}`).style.display = counts[i] === 0 ? 'block' : 'none';
+  });
+}
+
+function renderSection(containerId, videos, ctx) {
+  const c = document.getElementById(containerId);
+  c.innerHTML = '';
+  videos.forEach(v => c.appendChild(buildCard(v, getVS(v.id), ctx)));
+}
+
+function buildCard(v, vs, ctx) {
+  const card = document.createElement('div');
+  card.className = 'card';
+
+  let badge = '';
+  if (ctx === 'approved') badge = `<span class="pill green">✓ Aprobada</span>`;
+  if (ctx === 'done')     badge = `<span class="pill done">🎬 Grabada</span>`;
+
+  const bodyId = `body-${ctx}-${v.id}`;
+
+  card.innerHTML = `
+    <div class="card-header" onclick="toggleCard('${bodyId}', this)">
+      <div class="card-title-block">
+        <div class="card-num">${v.id}</div>
+        <div>
+          <div class="card-title">${v.titulo}</div>
+          <div class="card-meta">
+            <span class="pill orange">${v.plataforma}</span>
+            <span class="pill">${v.duracion}</span>
+            <span class="pill">${v.formato}</span>
+            ${badge}
+          </div>
+        </div>
+      </div>
+      <span class="card-chevron">▾</span>
+    </div>
+    <div class="card-body" id="${bodyId}">
+      <div class="content-grid">
+        <div class="content-block full">
+          <div class="content-label">📎 Video de referencia</div>
+          <a class="ref-link" href="${v.referencia_url}" target="_blank" rel="noopener">↗ ${v.referencia_texto}</a>
+        </div>
+        <div class="content-block full">
+          <div class="content-label">🎬 Hook — primeros 3 segundos</div>
+          <div class="hook-text">${v.hook}</div>
+        </div>
+        <div class="content-block full">
+          <div class="content-label">📝 Guión completo</div>
+          <div class="content-text">${v.guion}</div>
+        </div>
+        <div class="content-block">
+          <div class="content-label">📱 Texto en pantalla</div>
+          <div class="content-text">${v.texto_pantalla}</div>
+        </div>
+        <div class="content-block">
+          <div class="content-label">🎵 Música sugerida</div>
+          <div class="content-text">${v.musica}</div>
+        </div>
+        <div class="content-block full">
+          <div class="content-label">🎥 Notas de grabación</div>
+          <div class="content-text">${v.notas}</div>
+        </div>
+        <div class="content-block full">
+          <div class="content-label">➡️ Call to action</div>
+          <div class="content-text">${v.cta}</div>
+        </div>
+      </div>
+      ${buildActions(v, vs, ctx)}
+    </div>
+  `;
+  return card;
+}
+
+function buildActions(v, vs, ctx) {
+  const mod = vs.modification || '';
+
+  if (ctx === 'pending') {
+    return `
+      <div class="card-actions">
+        <div class="mod-area">
+          <label>Solicitar modificaciones (opcional)</label>
+          <textarea id="mod-${v.id}" placeholder="Ej: ajustar el hook, cambiar el tono, mencionar el menú de arte...">${mod}</textarea>
+          <button class="btn btn-save-mod" onclick="saveMod(${v.id})">Guardar nota</button>
+          ${mod ? `<div class="mod-note"><strong>Nota guardada</strong>${mod}</div>` : ''}
+        </div>
+        <div class="action-btns">
+          <button class="btn btn-approve" onclick="approve(${v.id})">✓ Aprobar idea</button>
+        </div>
+      </div>`;
+  }
+
+  if (ctx === 'approved') {
+    return `
+      <div class="card-actions">
+        ${mod ? `<div class="mod-area"><div class="mod-note"><strong>Nota de modificación</strong>${mod}</div></div>` : '<div style="flex:1"></div>'}
+        <div class="action-btns">
+          <button class="btn btn-done" onclick="markDone(${v.id})">🎬 Ya la grabamos</button>
+          <button class="btn btn-back" onclick="moveToRevision(${v.id})">← Regresar a Revisión</button>
+        </div>
+      </div>`;
+  }
+
+  if (ctx === 'done') {
+    return `
+      <div class="card-actions" style="background:#F0EDE8; border-top-color:#E0DBD4">
+        <div style="flex:1; font-size:11px; color:#999; letter-spacing:0.5px">🎬 Grabada y archivada.</div>
+        <div class="action-btns">
+          <button class="btn btn-back" onclick="moveToApproved(${v.id})">← Regresar a Aprobadas</button>
+        </div>
+      </div>`;
+  }
+  return '';
+}
+
+// ── ACTIONS ────────────────────────────────────────────────────────────────
+function toggleCard(bodyId, headerEl) {
+  const body = document.getElementById(bodyId);
+  const icon = headerEl.querySelector('.card-chevron');
+  const open = body.classList.toggle('open');
+  icon.classList.toggle('open', open);
+}
+
+function saveMod(id) {
+  const val = (document.getElementById(`mod-${id}`)?.value || '').trim();
+  setVS(id, { modification: val });
+  renderAll();
+  showToast('Nota guardada ✓');
+}
+
+function approve(id) {
+  const val = (document.getElementById(`mod-${id}`)?.value || '').trim();
+  setVS(id, { status: 'approved', modification: val, approvedAt: new Date().toISOString() });
+  renderAll();
+  showToast('¡Idea aprobada! Ahora está en "Aprobadas" ✓');
+}
+
+function markDone(id) {
+  setVS(id, { status: 'done', doneAt: new Date().toISOString() });
+  renderAll();
+  showToast('¡Marcada como grabada! 🎬 Guardada en "Ya Grabadas"');
+}
+
+function moveToRevision(id) {
+  setVS(id, { status: 'pending', approvedAt: null });
+  renderAll();
+  showToast('Regresada a "En Revisión"');
+}
+
+function moveToApproved(id) {
+  setVS(id, { status: 'approved', doneAt: null, approvedAt: new Date().toISOString() });
+  renderAll();
+  showToast('Regresada a "Aprobadas" ✓');
+}
+
+// ── TABS ───────────────────────────────────────────────────────────────────
+function switchTab(name) {
+  const tabs = ['revision','aprobadas','realizadas'];
+  document.querySelectorAll('.tab').forEach((t, i) => t.classList.toggle('active', tabs[i] === name));
+  document.querySelectorAll('.section').forEach(s => s.classList.toggle('active', s.id === `section-${name}`));
+}
+
+// ── MODAL ──────────────────────────────────────────────────────────────────
+function openNuevasModal() {
+  document.getElementById('modal-overlay').classList.add('open');
+  updatePromptText(); // Update prompt text based on current tema input
+}
+function updatePromptText() {
+  const temaInput = document.getElementById('tema-input').value.trim();
+  const basePrompt = 'Genera un nuevo lote de ideas de contenido para BRÜ';
+  const temaClause = temaInput ? ` enfocado en "${temaInput}"` : '';
+  const finalPrompt = `${basePrompt}${temaClause} y agrégalas al archivo BRÜ_Content_Review.html — manteniendo los guiones ya aprobados y grabados.`;
+  document.getElementById('prompt-text').innerText = finalPrompt;
+}
+function closeNuevasModal() {
+  document.getElementById('modal-overlay').classList.remove('open');
+}
+function handleOverlayClick(e) {
+  if (e.target === document.getElementById('modal-overlay')) closeNuevasModal();
+}
+function copyPrompt() {
+  const text = document.getElementById('prompt-text').innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById('btn-copy');
+    btn.classList.add('copied');
+    btn.textContent = '¡Copiado!';
+    setTimeout(() => {
+      btn.classList.remove('copied');
+      btn.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> Copiar mensaje`;
+    }, 2200);
+  });
+}
+
+// ── INIT ───────────────────────────────────────────────────────────────────
+renderAll();
+// Add event listener to tema input to update prompt in real-time
+document.getElementById('tema-input').addEventListener('input', updatePromptText);
+</script>
+</body>
+</html>
